@@ -12,6 +12,8 @@ CORS(app)
 def executar_macro():
     # 1. Pegar valor enviado pelo HTML
     valor_area = request.form.get("areaMapa")
+    if not valor_area:
+        return "Área não informada", 400
 
     # 2. Criar nome do arquivo
     timestamp = datetime.now().strftime("%d%m%Y%H%M%S")
@@ -23,6 +25,8 @@ def executar_macro():
     # 4. Baixar o arquivo
     url = "https://pedrogeorge.com.br/ExOp/ArquivosExcel/Analise_de_Processos_GFL.xlsm"
     response = requests.get(url)
+    if response.status_code != 200:
+        return "Erro ao baixar arquivo base", 500
 
     with open(caminho_arquivo, "wb") as f:
         f.write(response.content)
@@ -37,5 +41,21 @@ def executar_macro():
     # 6. Salvar alterações
     wb.save(caminho_arquivo)
 
-    # 7. Enviar arquivo para download
-    return send_file(caminho_arquivo, as_attachment=True)
+    # 7. Remover arquivo temporário após envio
+    @after_this_request
+    def remove_file(response):
+        try:
+            os.remove(caminho_arquivo)
+        except Exception as e:
+            app.logger.error("Erro ao remover arquivo: %s", e)
+        return response
+
+    # 8. Enviar arquivo para download
+    return send_file(
+        caminho_arquivo,
+        as_attachment=True,
+        download_name=nome_arquivo,
+        mimetype="application/vnd.ms-excel.sheet.macroEnabled.12"
+    )
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
