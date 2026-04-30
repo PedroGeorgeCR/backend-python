@@ -6,7 +6,8 @@ from flask_cors import CORS
 from openpyxl import load_workbook
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://pedrogeorge.com.br"}})
+#CORS(app, resources={r"/*": {"origins": "https://pedrogeorge.com.br"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route("/executar", methods=["POST"])
 def executar_macro():
