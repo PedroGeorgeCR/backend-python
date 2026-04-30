@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: backend-excel
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn baixarAnaliseProcessoGFL:app
