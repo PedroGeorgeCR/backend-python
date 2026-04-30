@@ -57,5 +57,6 @@ def executar_macro():
         download_name=nome_arquivo,
         mimetype="application/vnd.ms-excel.sheet.macroEnabled.12"
     )
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
