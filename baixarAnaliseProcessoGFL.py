@@ -2,6 +2,7 @@ import os
 import requests
 from datetime import datetime
 from flask import Flask, request, send_file
+from flask_cors import CORS
 from openpyxl import load_workbook
 
 app = Flask(__name__)
